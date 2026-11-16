@@ -1,5 +1,7 @@
 # Debian on the UniBOX (RK3568)
 
+**English** | [繁體中文](DEBIAN-ON-UNIBOX.zh-TW.md)
+
 This is what worked on my units. It is a description, not a one-click installer.
 Everything here assumes you have SSH access and **a full backup**.
 
@@ -68,13 +70,13 @@ memory use fell from about 1.4 GB to under 1 GB.
 The AP6398 Wi-Fi sits on SDIO (`brcmfmac`). Under the 6.1 kernel it could stall the whole
 machine some minutes after Wi-Fi connected. What helped:
 
-* **Turn off 802.11 power save** ([scripts/wifi](scripts/wifi)). With it on I saw
+* **Turn off 802.11 power save** ([scripts/wifi](../scripts/wifi)). With it on I saw
   `brcmf_sdio_bus_sleep: error while changing bus sleep state -110` about 1-2 times an hour;
   with it off, almost none over days.
 * **Hardware watchdog** (`RuntimeWatchdogSec=30`, `dw_wdt`): a frozen kernel resets in
   about 35 s. Tested with `echo c > /proc/sysrq-trigger`.
 * **Auto-reboot on hung tasks / soft lockups** via sysctl
-  ([scripts/watchdog](scripts/watchdog)).
+  ([scripts/watchdog](../scripts/watchdog)).
 * **Wired-link watchdog**: re-activates the wired connection if it loses its IPv4 address.
 * Keep Ethernet as the preferred route (lower metric) and Wi-Fi as backup.
 * Radio can be software-disabled by NetworkManager: if no access points appear, run
@@ -87,7 +89,7 @@ A one-off `brcmf_p2p_create_p2pdev: timeout` when the radio is enabled was harml
 ## 5. Bluetooth
 
 The AP6398 Bluetooth is on UART8 (`fe6c0000.serial`). The tty name depends on the kernel
-(`ttyS8` on the stock kernel, `ttyS0` on Debian's), so [scripts/bluetooth](scripts/bluetooth)
+(`ttyS8` on the stock kernel, `ttyS0` on Debian's), so [scripts/bluetooth](../scripts/bluetooth)
 looks it up by device name. Sequence: power GPIOs up, then
 `btattach -B <tty> -P bcm -S 115200 -N`, then start `bluetooth.service`. Install `bluez`.
 

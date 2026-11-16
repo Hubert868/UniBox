@@ -1,6 +1,8 @@
 # UniBox
 Debian13 on Uni Box
 
+**English** | [繁體中文](README.zh-TW.md)
+
 Notes, scripts and a driver port for running plain **Debian 13 (trixie)** on the
 **China Unicom "UniBOX" smart-home box** (board string: `HINLINK RK3568 UNICOMBOX V1`),
 replacing the stock fnOS ("trim") userland.

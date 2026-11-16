@@ -1,5 +1,7 @@
 # WS2812 status strip
 
+**English** | [繁體中文](README.zh-TW.md)
+
 The box has a WS2812 strip on **GPIO105** (connector J8). The units here only set colours;
 they all go through a small helper, `/usr/local/bin/wsled`, which bit-bangs the strip.
 

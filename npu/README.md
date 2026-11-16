@@ -1,5 +1,7 @@
 # RKNPU driver port (RK3568, Debian 6.1)
 
+**English** | [繁體中文](README.zh-TW.md)
+
 An out-of-tree build of Rockchip's `rknpu` driver, version **0.9.8**, for Debian's stock
 `6.1.0-53-arm64` kernel. Debian's kernel has no Rockchip BSP, so a few things the driver
 expects are missing and have to be stubbed or handled by the driver itself.
