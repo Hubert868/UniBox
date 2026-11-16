@@ -22,8 +22,27 @@ Everything here assumes you have SSH access and **a full backup**.
   kernel, device tree and `uInitrd` from the boot partition; I never needed to change it.
 * The stock kernel and the userland packages come from the fnOS `trim` repository.
 
-**Decision that kept my units bootable:** leave U-Boot, `fnEnv.txt`, `boot.scr`,
-`boot.cmd` and the device tree exactly as shipped. Only swap what they load.
+**Decision that kept my units bootable:** leave U-Boot, `boot.scr`, `boot.cmd` and the
+original device-tree file exactly as shipped, and only swap the kernel/initrd that
+`fnEnv.txt` points at.
+
+**What my units actually boot with** (both identical, so please do not assume stock values):
+
+```
+extraargs=cma=256M iomem=relaxed
+fdtfile=rockchip/rk3568-hinlink-unicombox-v1-pwmtest3.dtb
+kernelfile=vmlinuz-6.1.0-53-arm64
+initrdfile=uInitrd-6.1.0-53-arm64
+```
+
+* `...-pwmtest3.dtb` is **my own modified copy** of the stock `...-unicombox-v1.dtb` (not
+  published here because it derives from a vendor file). Compared with the stock tree it
+  switches two nodes to `status = "okay"`, disables one node and changes one PCIe `msi-map`
+  entry; the NPU node is byte-identical. The stock file is still on disk, untouched.
+* `iomem=relaxed` is there so my LED helper can reach hardware registers through `/dev/mem`
+  (my understanding; the helper is not published). `cma=256M` reserves contiguous memory.
+* I did **not** test the Debian kernel with the unmodified stock dtb on every unit, so I
+  cannot say whether the modified dtb is required for a plain Debian boot.
 
 ## 2. Use Debian's own kernel
 

@@ -41,7 +41,9 @@ This repository does **not** contain the Rockchip sources; fetch them yourself.
 3. Install `linux-headers-6.1.0-53-arm64`, then `make`.
 4. Load with `insmod rknpu.ko`. I loaded it manually; making it load at boot is left to you.
 
-It worked with the box's stock device tree (which already describes the NPU).
+I tested it with my modified device-tree variant described in
+[docs/DEBIAN-ON-UNIBOX.md](../docs/DEBIAN-ON-UNIBOX.md). Its NPU node is byte-identical to
+the stock one, but I did not test the module with the unmodified stock file.
 
 ## Results on my unit (RK3568, NPU at 600 MHz)
 

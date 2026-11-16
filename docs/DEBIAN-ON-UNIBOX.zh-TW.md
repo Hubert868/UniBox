@@ -20,8 +20,25 @@
   `uInitrd`；我從來不需要修改它。
 * 原廠核心與系統套件來自 fnOS 的 `trim` 軟體庫。
 
-**讓我的機器一直能開機的決定：** U-Boot、`fnEnv.txt`、`boot.scr`、`boot.cmd` 和裝置樹
-完全保持出廠原樣，只更換它們所載入的東西。
+**讓我的機器一直能開機的決定：** U-Boot、`boot.scr`、`boot.cmd` 和原始的裝置樹檔案
+完全保持出廠原樣，只更換 `fnEnv.txt` 所指向的核心與 initrd。
+
+**我的機器實際使用的開機設定**（兩台完全相同，請不要假設它是原廠預設值）：
+
+```
+extraargs=cma=256M iomem=relaxed
+fdtfile=rockchip/rk3568-hinlink-unicombox-v1-pwmtest3.dtb
+kernelfile=vmlinuz-6.1.0-53-arm64
+initrdfile=uInitrd-6.1.0-53-arm64
+```
+
+* `...-pwmtest3.dtb` 是**我自己修改的**原廠 `...-unicombox-v1.dtb` 副本（因為衍生自原廠檔案，
+  所以不放在這裡）。和原廠版相比，它把兩個節點改成 `status = "okay"`、停用一個節點，
+  並修改一筆 PCIe `msi-map`；NPU 節點則與原廠版位元組完全相同。原廠檔案仍留在磁碟上、沒被動過。
+* `iomem=relaxed` 是為了讓我的燈條輔助程式能透過 `/dev/mem` 存取硬體暫存器
+  （這是我的理解；該輔助程式未公開）。`cma=256M` 用來保留連續記憶體。
+* 我**沒有**在每台機器上用未修改的原廠 dtb 測試過 Debian 核心，所以無法確定單純開機
+  是否必須用修改過的 dtb。
 
 ## 2. 改用 Debian 自己的核心
 

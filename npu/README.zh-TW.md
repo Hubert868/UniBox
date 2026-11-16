@@ -37,7 +37,9 @@ Debian 的核心沒有 Rockchip BSP，驅動預期存在的一些東西不在，
 3. 安裝 `linux-headers-6.1.0-53-arm64`，然後執行 `make`。
 4. 用 `insmod rknpu.ko` 載入。我是手動載入；要不要開機自動載入由你決定。
 
-它可以搭配這台機器原廠的裝置樹運作（該裝置樹已經描述了 NPU）。
+我是搭配自己修改過的裝置樹變體測試的（說明見
+[docs/DEBIAN-ON-UNIBOX.zh-TW.md](../docs/DEBIAN-ON-UNIBOX.zh-TW.md)）。它的 NPU 節點與原廠版
+位元組完全相同，但我沒有用未修改的原廠檔案測試過這個模組。
 
 ## 我的機器上的結果（RK3568，NPU 600 MHz）
 
