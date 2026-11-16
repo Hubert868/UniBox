@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>WiFi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../base1/cockpit.js"></script>
+<script src="wifi-lib.js"></script>
+<style>
+  :root { --fg:#151515; --bg:#f0f0f0; --card:#fff; --line:#d2d2d2; --muted:#6a6e73; --ok:#3e8635; --bad:#c9190b; --accent:#0066cc; }
+  @media (prefers-color-scheme: dark) { :root { --fg:#e0e0e0; --bg:#1b1d21; --card:#212427; --line:#444548; --muted:#a0a3a6; --ok:#5ba352; --bad:#ff6b5e; --accent:#4394e5; } }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--fg); font:14px/1.5 system-ui,"Noto Sans CJK TC","PingFang TC",sans-serif; }
+  h2 { margin:0 0 8px; font-size:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px 16px; margin-bottom:14px; max-width:880px; }
+  .muted { color:var(--muted); } .ok { color:var(--ok); } .bad { color:var(--bad); }
+  table { width:100%; border-collapse:collapse; } th,td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  button { font:inherit; padding:4px 12px; border:1px solid var(--line); border-radius:4px; background:var(--card); color:var(--fg); cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; } button.danger { color:var(--bad); }
+  button:disabled { opacity:.5; cursor:default; }
+  input[type=text],input[type=password],select { font:inherit; padding:4px 8px; border:1px solid var(--line); border-radius:4px; background:var(--card); color:var(--fg); min-width:220px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0; }
+  #msg { max-width:880px; margin-bottom:12px; padding:8px 12px; border-radius:4px; display:none; white-space:pre-wrap; border:1px solid var(--line); background:var(--card); }
+  .bars { font-family:monospace; letter-spacing:1px; }
+  .form-row td { background:rgba(128,128,128,.08); }
+</style>
+</head>
+<body>
+  <div id="msg"></div>
+
+  <div class="card">
+    <h2>目前狀態</h2>
+    <div id="status" class="muted">讀取中…</div>
+    <div class="row">
+      <button id="btn-radio"></button>
+      <button id="btn-disconnect" style="display:none">中斷目前連線</button>
+      <button id="btn-refresh">重新整理狀態</button>
+    </div>
+    <div class="muted" style="margin-top:6px">提醒：有線網路的路由優先序高於 WiFi（有線 100、WiFi 600），連上 WiFi 不會取代有線，只在有線中斷時接手。</div>
+  </div>
+
+  <div class="card">
+    <h2>附近的 WiFi</h2>
+    <div class="row"><button id="btn-scan" class="primary">掃描</button><span id="scan-note" class="muted"></span></div>
+    <table><thead><tr><th>SSID</th><th>訊號</th><th>安全性</th><th>頻道</th><th></th></tr></thead><tbody id="scan-body"></tbody></table>
+    <div class="row" style="margin-top:10px"><button id="btn-hidden">連線到隱藏網路…</button></div>
+    <div id="hidden-form" style="display:none">
+      <div class="row"><label>SSID <input type="text" id="h-ssid" autocomplete="off"></label>
+        <label>安全性 <select id="h-sec"><option value="wpa-psk">WPA/WPA2 密碼</option><option value="sae">WPA3 密碼</option><option value="open">無密碼</option></select></label></div>
+      <div class="row"><label>密碼 <input type="password" id="h-pw" autocomplete="new-password"></label>
+        <button id="h-go" class="primary">連線</button><button id="h-cancel">取消</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>已儲存的 WiFi</h2>
+    <table><thead><tr><th>名稱</th><th>自動連線</th><th>狀態</th><th></th></tr></thead><tbody id="saved-body"></tbody></table>
+  </div>
+<script src="wifi.js"></script>
+</body>
+</html>

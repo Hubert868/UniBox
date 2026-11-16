@@ -1,0 +1,12 @@
+const L = require("./bt-lib.js"); const assert = require("assert");
+const devs = L.parseDevices("\x1b[0;92mNEW\x1b[0m x\nDevice AA:BB:CC:00:00:01 Example Device\nDevice AA:BB:CC:00:00:02 AA-BB-CC-00-00-02\nDevice AA:BB:CC:00:00:03 My Phone  \njunk\nDevice zz NAME\n");
+assert.strictEqual(devs.length, 3);
+assert.strictEqual(devs[0].name, "Example Device"); assert.strictEqual(devs[0].unnamed, false);
+assert.strictEqual(devs[1].unnamed, true);
+assert.strictEqual(devs[2].name, "My Phone");
+const info = L.parseInfo("Device AA:BB (public)\n\tName: Foo\n\tPaired: yes\n\tTrusted: no\n\tConnected: yes\n\tUUID: A (00)\n\tUUID: B (01)\n");
+assert.strictEqual(info.Name, "Foo"); assert(L.yes(info.Paired)); assert(!L.yes(info.Trusted)); assert(L.yes(info.Connected)); assert.strictEqual(info.UUID, "A (00)");
+assert(L.isMac("aa:bb:cc:dd:ee:ff")); assert(!L.isMac("aa:bb:cc;dd:ee:ff")); assert(!L.isMac("x; rm -rf /"));
+assert(/PIN/.test(L.explain("Failed to pair: org.bluez.Error.AuthenticationFailed")));
+assert(/逾時/.test(L.explain("Failed to connect: org.bluez.Error.Failed page-timeout")));
+console.log("ok");

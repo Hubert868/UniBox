@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>藍牙</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../base1/cockpit.js"></script>
+<script src="bt-lib.js"></script>
+<style>
+  :root { --fg:#151515; --bg:#f0f0f0; --card:#fff; --line:#d2d2d2; --muted:#6a6e73; --ok:#3e8635; --bad:#c9190b; --accent:#0066cc; }
+  @media (prefers-color-scheme: dark) { :root { --fg:#e0e0e0; --bg:#1b1d21; --card:#212427; --line:#444548; --muted:#a0a3a6; --ok:#5ba352; --bad:#ff6b5e; --accent:#4394e5; } }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--fg); font:14px/1.5 system-ui,"Noto Sans CJK TC","PingFang TC",sans-serif; }
+  h2 { margin:0 0 8px; font-size:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px 16px; margin-bottom:14px; max-width:880px; }
+  .muted { color:var(--muted); } .ok { color:var(--ok); } .bad { color:var(--bad); }
+  table { width:100%; border-collapse:collapse; } th,td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  button { font:inherit; padding:4px 12px; border:1px solid var(--line); border-radius:4px; background:var(--card); color:var(--fg); cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; } button.danger { color:var(--bad); }
+  button:disabled { opacity:.5; cursor:default; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0; }
+  #msg { max-width:880px; margin-bottom:12px; padding:8px 12px; border-radius:4px; display:none; white-space:pre-wrap; border:1px solid var(--line); background:var(--card); }
+  code { font-family:monospace; }
+</style>
+</head>
+<body>
+  <div id="msg"></div>
+
+  <div class="card">
+    <h2>目前狀態</h2>
+    <div id="status" class="muted">讀取中…</div>
+    <div class="row">
+      <button id="btn-power"></button>
+      <button id="btn-refresh">重新整理狀態</button>
+    </div>
+    <div class="muted" style="margin-top:6px">提醒：藍牙與 WiFi 共用 2.4GHz，連上藍牙後若 WiFi 變慢請回報。本頁僅支援「免輸入 PIN」的配對（手機、BLE 感測器、多數耳機/喇叭）；若系統沒有安裝音訊服務（PulseAudio／PipeWire），耳機可配對但不會有聲音輸出。</div>
+  </div>
+
+  <div class="card">
+    <h2>附近的藍牙裝置</h2>
+    <div class="row">
+      <button id="btn-scan" class="primary">掃描（8 秒）</button>
+      <label><input type="checkbox" id="chk-unnamed"> 顯示未命名裝置</label>
+      <span id="scan-note" class="muted"></span>
+    </div>
+    <div class="muted">先讓要連的裝置進入配對模式（耳機長按電源鍵到閃燈），再按掃描。</div>
+    <table><thead><tr><th>名稱</th><th>位址</th><th></th></tr></thead><tbody id="scan-body"></tbody></table>
+  </div>
+
+  <div class="card">
+    <h2>已配對的裝置</h2>
+    <table><thead><tr><th>名稱</th><th>位址</th><th>狀態</th><th>自動重連</th><th></th></tr></thead><tbody id="paired-body"></tbody></table>
+  </div>
+<script src="bt.js"></script>
+</body>
+</html>

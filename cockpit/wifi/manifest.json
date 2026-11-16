@@ -1,0 +1,15 @@
+{
+    "name": "wifi",
+    "requires": {
+        "cockpit": "137"
+    },
+    "menu": {
+        "index": {
+            "label": "WiFi",
+            "order": 41,
+            "keywords": [
+                { "matches": ["wifi", "wlan", "wireless", "wpa", "無線", "網路"] }
+            ]
+        }
+    }
+}

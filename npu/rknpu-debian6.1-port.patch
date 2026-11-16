@@ -1,0 +1,90 @@
+diff -ruN '--exclude=*.o' '--exclude=*.ko' '--exclude=.*.cmd' '--exclude=*.mod*' '--exclude=modules.order' '--exclude=Module.symvers' '--exclude=stubs' '--exclude=Makefile' '--exclude=Kconfig' lr/drivers/rknpu/include/rknpu_devfreq.h build/include/rknpu_devfreq.h
+--- lr/drivers/rknpu/include/rknpu_devfreq.h
++++ build/include/rknpu_devfreq.h
+@@ -7,7 +7,7 @@
+ #ifndef __LINUX_RKNPU_DEVFREQ_H
+ #define __LINUX_RKNPU_DEVFREQ_H
+ 
+-#ifdef CONFIG_PM_DEVFREQ
++#ifdef RKNPU_USE_DEVFREQ
+ void rknpu_devfreq_lock(struct rknpu_device *rknpu_dev);
+ void rknpu_devfreq_unlock(struct rknpu_device *rknpu_dev);
+ int rknpu_devfreq_init(struct rknpu_device *rknpu_dev);
+@@ -34,12 +34,12 @@
+ 
+ static inline int rknpu_devfreq_runtime_suspend(struct device *dev)
+ {
+-	return -EOPNOTSUPP;
++	return 0; /* Debian 移植：無 devfreq 時，runtime PM 回呼應成功而非 -EOPNOTSUPP */
+ }
+ 
+ static inline int rknpu_devfreq_runtime_resume(struct device *dev)
+ {
+-	return -EOPNOTSUPP;
++	return 0; /* Debian 移植：同上 */
+ }
+ #endif /* CONFIG_PM_DEVFREQ */
+ 
+diff -ruN '--exclude=*.o' '--exclude=*.ko' '--exclude=.*.cmd' '--exclude=*.mod*' '--exclude=modules.order' '--exclude=Module.symvers' '--exclude=stubs' '--exclude=Makefile' '--exclude=Kconfig' lr/drivers/rknpu/rknpu_debugger.c build/rknpu_debugger.c
+--- lr/drivers/rknpu/rknpu_debugger.c
++++ build/rknpu_debugger.c
+@@ -14,7 +14,7 @@
+ #include <asm/div64.h>
+ 
+ #ifndef FPGA_PLATFORM
+-#ifdef CONFIG_PM_DEVFREQ
++#ifdef RKNPU_USE_DEVFREQ
+ #include <../drivers/devfreq/governor.h>
+ #endif
+ #endif
+@@ -193,7 +193,7 @@
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM_DEVFREQ
++#ifdef RKNPU_USE_DEVFREQ
+ static ssize_t rknpu_freq_set(struct file *file, const char __user *ubuf,
+ 			      size_t len, loff_t *offp)
+ {
+diff -ruN '--exclude=*.o' '--exclude=*.ko' '--exclude=.*.cmd' '--exclude=*.mod*' '--exclude=modules.order' '--exclude=Module.symvers' '--exclude=stubs' '--exclude=Makefile' '--exclude=Kconfig' lr/drivers/rknpu/rknpu_drv.c build/rknpu_drv.c
+--- lr/drivers/rknpu/rknpu_drv.c
++++ build/rknpu_drv.c
+@@ -321,6 +321,14 @@
+ 	return 0;
+ }
+ 
++/*
++ * Debian 6.1 移植：本版不含 Rockchip devfreq/OPP，因此 NPU 供電電壓需由驅動自行設定。
++ * OPP 表：<=600MHz 需 850mV。預設 850000 uV；僅供除錯時調整，請勿調低。
++ */
++static unsigned int rknpu_volt_uv = 850000;
++module_param(rknpu_volt_uv, uint, 0444);
++MODULE_PARM_DESC(rknpu_volt_uv, "vdd_npu voltage in uV applied before power on (default 850000)");
++
+ static int rknpu_power_on(struct rknpu_device *rknpu_dev);
+ static int rknpu_power_off(struct rknpu_device *rknpu_dev);
+ 
+@@ -908,6 +916,14 @@
+ 
+ #ifndef FPGA_PLATFORM
+ 	if (rknpu_dev->vdd) {
++		ret = regulator_set_voltage(rknpu_dev->vdd, rknpu_volt_uv,
++					    rknpu_volt_uv + 50000);
++		if (ret) {
++			LOG_DEV_ERROR(dev,
++				      "failed to set vdd %u uV, ret: %d\n",
++				      rknpu_volt_uv, ret);
++			return ret;
++		}
+ 		ret = regulator_enable(rknpu_dev->vdd);
+ 		if (ret) {
+ 			LOG_DEV_ERROR(
+@@ -916,6 +932,8 @@
+ 				ret);
+ 			return ret;
+ 		}
++		dev_info(dev, "port: vdd_npu = %d uV before power on\n",
++			 regulator_get_voltage(rknpu_dev->vdd));
+ 	}
+ 
+ 	if (rknpu_dev->mem) {

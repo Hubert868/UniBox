@@ -1,0 +1,15 @@
+{
+    "name": "bluetooth",
+    "requires": {
+        "cockpit": "137"
+    },
+    "menu": {
+        "index": {
+            "label": "藍牙",
+            "order": 42,
+            "keywords": [
+                { "matches": ["bluetooth", "bt", "ble", "藍牙", "藍芽", "配對"] }
+            ]
+        }
+    }
+}

@@ -1,0 +1,6 @@
+[Unit]
+Description=Re-activate wired connection if end0 has no IPv4
+After=NetworkManager.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/wired-watchdog.sh

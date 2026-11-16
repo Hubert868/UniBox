@@ -1,0 +1,9 @@
+#!/bin/sh
+# AP6398 藍牙上電: RTS 拉低、BT_WAKE 拉高、BT_REG_ON 重置
+g() { [ -d /sys/class/gpio/gpio$1 ] || echo $1 > /sys/class/gpio/export; echo $2 > /sys/class/gpio/gpio$1/direction; }
+g 73 low
+g 138 high
+g 140 low
+sleep 0.3
+echo high > /sys/class/gpio/gpio140/direction
+sleep 0.5

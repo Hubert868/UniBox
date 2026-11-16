@@ -1,0 +1,12 @@
+[Unit]
+Description=Status strip: ready (green), shutdown (red)
+After=docker.service ssh.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/ws-set 0,1,0
+ExecStop=/usr/local/bin/ws-set 1,0,0
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Status strip: booting (amber)
+DefaultDependencies=no
+Before=sysinit.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ws-set 2,1,0
+
+[Install]
+WantedBy=sysinit.target

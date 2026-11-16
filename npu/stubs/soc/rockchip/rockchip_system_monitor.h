@@ -1,0 +1,4 @@
+#ifndef _STUB_ROCKCHIP_SYSTEM_MONITOR_H
+#define _STUB_ROCKCHIP_SYSTEM_MONITOR_H
+struct monitor_dev_info;
+#endif

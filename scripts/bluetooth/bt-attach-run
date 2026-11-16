@@ -1,0 +1,11 @@
+#!/bin/sh
+# 找出 UART8 (fe6c0000.serial) 對應的 tty：trim 核心是 ttyS8，Debian 官方核心(上限4個)是 ttyS0
+TTY=""
+for t in /sys/class/tty/ttyS*; do
+  if readlink -f "$t/device" 2>/dev/null | grep -q 'fe6c0000.serial'; then
+    TTY="/dev/$(basename "$t")"; break
+  fi
+done
+[ -n "$TTY" ] || { echo "UART8 (fe6c0000.serial) 對應的 tty 找不到" >&2; exit 1; }
+echo "使用 $TTY" >&2
+exec /usr/bin/btattach -B "$TTY" -P bcm -S 115200 -N

@@ -1,0 +1,4 @@
+#!/bin/sh
+[ -d /sys/class/gpio/gpio105 ] || echo 105 > /sys/class/gpio/export 2>/dev/null
+echo out > /sys/class/gpio/gpio105/direction 2>/dev/null
+exec /usr/local/bin/wsled "$@"

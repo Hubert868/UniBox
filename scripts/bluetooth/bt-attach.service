@@ -1,0 +1,13 @@
+[Unit]
+Description=Bluetooth controller (AP6398 on UART8)
+
+[Service]
+Type=simple
+ExecStartPre=/usr/local/bin/bt-power
+ExecStart=/usr/local/bin/bt-attach-run
+ExecStartPost=/bin/sh -c 'for i in $(seq 1 40); do [ -d /sys/class/bluetooth/hci0 ] && break; sleep 1; done; systemctl start --no-block bluetooth.service'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
